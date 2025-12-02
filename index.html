@@ -1,11 +1,1173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FoodieHub</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>FoodieHub - Delicious Food Delivered</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="img/Restaurant-logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/Restaurant-logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/Restaurant-logo.png">
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 </head>
+<style>
+    #confirmMsg {
+      text-align: center;
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      border: 2px solid #4CAF50;
+      border-radius: 12px;
+      padding: 25px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      z-index: 9999;
+    }
+
+    #confirmMsg h2 {
+      color: #4CAF50;
+      margin-bottom: 20px;
+    }
+
+    /* Progress bar steps */
+    .progress-container {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin: 20px 0 30px;
+    }
+
+    .progress-container::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: #ddd;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+
+    .progress {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      height: 5px;
+      background: #4CAF50;
+      width: 0%;
+      transform: translateY(-50%);
+      transition: width 1s ease;
+      z-index: 2;
+    }
+
+    .step {
+      position: relative;
+      z-index: 3;
+      background: #ddd;
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+    }
+
+    .step.active {
+      background: #4CAF50;
+    }
+
+    .labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    #status {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    #timer {
+      font-size: 22px;
+      font-weight: bold;
+      color: #e53935;
+      margin-top: 10px;
+    }
+
+    .emoji {
+      font-size: 50px;
+      margin-top: 20px;
+      display: inline-block;
+    }
+
+    /* Animations */
+    .bounce { animation: bounce 1s infinite; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .shake { animation: shake 1s infinite; }
+    @keyframes shake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-10deg); }
+      75% { transform: rotate(10deg); }
+    }
+
+    .bike {
+      position: relative;
+      animation: ride 3s linear infinite;
+      display: inline-block;
+    }
+    @keyframes ride {
+      0% { left: -120px; }
+      100% { left: 120px; }
+    }
+
+    .pop { animation: pop 1s ease forwards; }
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    button {
+      padding: 12px 25px;
+      border: none;
+      background: #4CAF50;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+</style>
 <body>
-    <p>Welcome to FoodieHub!</p>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+        <a class="navbar-brand d-flex align-items-center" href="#home" style="font-family: 'Merriweather'; font-size: 1.5rem;">
+            <img src="img/Restaurant-logo.png" width="30" height="30" class="mr-2" alt="FoodieHub" />
+            FoodieHub
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="#menu">Menu</a></li>
+                <li class="nav-item"><a class="nav-link" href="#offers">Offers</a></li>
+                <li class="nav-item"><a class="nav-link" href="#gallery">Gallery</a></li>
+                <li class="nav-item"><a class="nav-link" href="#testimonials">Reviews</a></li>
+                <li class="nav-item"><a class="nav-link" href="#reservation">Reserve</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                <li class="nav-item">
+                    <a id="authLink" class="nav-link" href="#" data-toggle="modal" data-target="#authModal">Login/Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link position-relative" href="#cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count" class="badge badge-danger position-absolute" style="top:0; right:-10px;">0</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Video/Image Slider -->
+    <section id="home" class="hero-section">
+        <div id="heroCarousel" class="carousel slide carousel-fade" data-ride="carousel" data-interval="5000">
+            <ol class="carousel-indicators">
+                <li data-target="#heroCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#heroCarousel" data-slide-to="1"></li>
+                <li data-target="#heroCarousel" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+                <!-- Slide 1 - Video -->
+                <div class="carousel-item active">
+                    <div class="video-bg-wrapper">
+                        <video class="video-bg" autoplay muted loop playsinline>
+                            <source src="img/FoodieHub.mp4" type="video/mp4" />
+                        </video>
+                        <div class="overlay"></div>
+                    </div>
+                    <div class="carousel-caption d-flex flex-column justify-content-center align-items-center">
+                        <h1 class="display-4 font-weight-bold animate__animated animate__fadeInDown">Delicious Meals, Delivered Fast</h1>
+                        <p class="lead animate__animated animate__fadeInUp animate__delay-1s">Crave-worthy dishes from your favorite restaurants.</p>
+                        <a id="heroOrderNowBtn" href="#menu" class="btn btn-primary btn-lg mt-2 animate__animated animate__zoomIn animate__delay-2s">Order Now</a>
+                    </div>
+                </div>
+                <!-- Slide 2 - Image -->
+                <div class="carousel-item">
+                    <img class="d-block w-100 hero-img" src="img/Classic Burger (2).jpg" alt="Burgers">
+                    <div class="carousel-caption d-none d-md-flex flex-column justify-content-center align-items-center">
+                        <h1 class="display-4 font-weight-bold">Sizzling Burgers</h1>
+                        <h3 class="lead"><strong><b>Juicy, cheesy, and loaded with flavor.</b></strong></h3>
+                        <a href="#menu" class="btn btn-outline-light btn-lg mt-2">Browse Menu</a>
+                    </div>
+                </div>
+                <!-- Slide 3 - Image -->
+                <div class="carousel-item">
+                    <img class="d-block w-100 hero-img" src="img/Margherita Pizza (2).jpg" alt="Pizza">
+                    <div class="carousel-caption d-none d-md-flex flex-column justify-content-center align-items-center">
+                        <h1 class="display-4 font-weight-bold">Fresh From The Oven</h1>
+                        <h3 class="lead"><strong><b>Pizzas, pastas, and more.</b></strong></h3>
+                        <a href="#offers" class="btn btn-light btn-lg mt-2">See Offers</a>
+                    </div>
+                </div>
+                
+            </div>
+            <a class="carousel-control-prev" href="#heroCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#heroCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5 bg-light" data-reveal>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <img src="img/About.avif" class="img-fluid rounded shadow-sm" alt="About FoodieHub" />
+                </div>
+                <div class="col-md-6">
+                    <h2 class="section-title">About FoodieHub</h2>
+                    <p class="text-muted">We bring mouth-watering flavors from top-rated restaurants straight to your door. Our chefs craft every dish with fresh ingredients and lots of love.</p>
+                    <div class="about-info-box p-3 mb-3 rounded shadow-sm bg-white">
+                        <h6 class="mb-2">Why FoodieHub?</h6>
+                        <ul class="mb-0 pl-3">
+                            <li>Fresh, locally-sourced ingredients</li>
+                            <li>Fast delivery across the city</li>
+                            <li>Exclusive daily deals and combos</li>
+                            <li>Hygiene-first kitchens and packaging</li>
+                        </ul>
+                    </div>
+                    <div class="d-flex align-items-center p-3 rounded bg-white shadow-sm">
+                        <img src="img/Pasta Alfredo (1).jpg" width="72" height="72" class="rounded-circle mr-3 object-cover" alt="Chef" />
+                        <div>
+                            <h6 class="mb-1">Chef’s Special</h6>
+                            <p class="mb-0 text-muted">Signature truffle pasta with parmesan flakes.</p>
+                        </div>
+                    </div>
+                    <a href="#reservation" class="btn btn-primary mt-3">Book a Table</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-5" data-reveal>
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Our Menu</h2>
+                <p class="text-muted">Tasty picks curated just for you</p>
+            </div>
+            <!-- Menu Tabs -->
+            <ul class="nav nav-tabs justify-content-center mb-4" id="menuTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="tab-popular" data-toggle="tab" href="#popular" role="tab" aria-controls="popular" aria-selected="true">Popular</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab-breakfast" data-toggle="tab" href="#breakfast" role="tab" aria-controls="breakfast" aria-selected="false">Breakfast</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab-lunch" data-toggle="tab" href="#lunch" role="tab" aria-controls="lunch" aria-selected="false">Lunch</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab-dinner" data-toggle="tab" href="#dinner" role="tab" aria-controls="dinner" aria-selected="false">Dinner</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab-drinks" data-toggle="tab" href="#drinks" role="tab" aria-controls="drinks" aria-selected="false">Drinks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab-desserts" data-toggle="tab" href="#desserts" role="tab" aria-controls="desserts" aria-selected="false">Desserts</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="menuTabsContent">
+                <div class="tab-pane fade show active" id="popular" role="tabpanel" aria-labelledby="tab-popular">
+            <div class="row">
+                <!-- Item 1 -->
+                <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                    <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                        <img class="card-img-top" src="img/Classic Burger (3).jpg" alt="Classic Burger" />
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Classic Burger</h5>
+                            <p class="card-text text-muted">Grilled beef patty, cheddar, lettuce, tomato.</p>
+                            <div class="d-flex align-items-center justify-content-between mt-auto">
+                                <span class="price">Rs. 749</span>
+                                <button class="btn btn-primary add-to-cart" data-item="Classic Burger" data-price="749">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Item 2 -->
+                <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                    <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                        <img class="card-img-top" src="img/Margherita Pizza (3).jpg" alt="Margherita Pizza" />
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Margherita Pizza</h5>
+                            <p class="card-text text-muted">San Marzano tomatoes, mozzarella, basil.</p>
+                            <div class="d-flex align-items-center justify-content-between mt-auto">
+                                <span class="price">Rs. 999</span>
+                                <button class="btn btn-primary add-to-cart" data-item="Margherita Pizza" data-price="999">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Item 3 -->
+                <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                    <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                        <img class="card-img-top" src="img/Pasta Alfredo (1).jpg" alt="Pasta Alfredo" />
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Pasta Alfredo</h5>
+                            <p class="card-text text-muted">Creamy sauce with parmesan and garlic.</p>
+                            <div class="d-flex align-items-center justify-content-between mt-auto">
+                                <span class="price">Rs. 949</span>
+                                <button class="btn btn-primary add-to-cart" data-item="Pasta Alfredo" data-price="949">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Item 4 -->
+                <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                    <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                        <img class="card-img-top" src="img/Chicken Tikka (2).jpg" alt="Chicken Tikka" />
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Chicken Tikka</h5>
+                            <p class="card-text text-muted">Spiced, grilled chunks with mint chutney.</p>
+                            <div class="d-flex align-items-center justify-content-between mt-auto">
+                                <span class="price">Rs. 499</span>
+                                <button class="btn btn-primary add-to-cart" data-item="Chicken Tikka" data-price="499">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                    <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                        <img class="card-img-top" src="img/Sushi Platter (4).jpg" alt="Sushi Platter" />
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Sushi Platter</h5>
+                            <p class="card-text text-muted">Assorted rolls with soy and wasabi.</p>
+                            <div class="d-flex align-items-center justify-content-between mt-auto">
+                                <span class="price">Rs. 2,499</span>
+                                <button class="btn btn-primary add-to-cart" data-item="Sushi Platter" data-price="2499">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 6 -->
+                <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                    <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                        <img class="card-img-top" src="img/Vegan Salad (1).jpg" alt="Vegan Salad" />
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Vegan Salad</h5>
+                            <p class="card-text text-muted">Fresh greens, avocado, quinoa, vinaigrette.</p>
+                            <div class="d-flex align-items-center justify-content-between mt-auto">
+                                <span class="price">Rs. 699</span>
+                                <button class="btn btn-primary add-to-cart" data-item="Vegan Salad" data-price="699">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                </div>
+                <div class="tab-pane fade" id="breakfast" role="tabpanel" aria-labelledby="tab-breakfast">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/Buttermilk Pancakes (2).jpg" alt="Pancakes" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Buttermilk Pancakes</h5>
+                                    <p class="card-text text-muted">Maple syrup and berries.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 599</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Pancakes" data-price="599">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/Cheese Omelette (2).jpg" alt="Omelette" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Cheese Omelette</h5>
+                                    <p class="card-text text-muted">Three eggs, cheddar, herbs.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 399</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Cheese Omelette" data-price="399">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/Avocado Toast (2).jpg" alt="Avocado Toast" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Avocado Toast</h5>
+                                    <p class="card-text text-muted">Sourdough, smashed avo, chili flakes.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 599</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Avocado Toast" data-price="599">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="lunch" role="tabpanel" aria-labelledby="tab-lunch">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/Grilled Sandwich (3).jpg" alt="Grilled Sandwich" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Grilled Sandwich</h5>
+                                    <p class="card-text text-muted">Chicken, lettuce, aioli.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 549</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Grilled Sandwich" data-price="549">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/Caesar Salad (3).jpg" alt="Caesar Salad" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Caesar Salad</h5>
+                                    <p class="card-text text-muted">Romaine, parmesan, croutons.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 799</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Caesar Salad" data-price="799">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/Pasta Bolognese (2).jpg" alt="Pasta Bolognese" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Pasta Bolognese</h5>
+                                    <p class="card-text text-muted">Slow-cooked meat sauce.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 999</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Pasta Bolognese" data-price="999">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="dinner" role="tabpanel" aria-labelledby="tab-dinner">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/Sirloin Steak (2).jpg" alt="Steak" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Sirloin Steak</h5>
+                                    <p class="card-text text-muted">Grilled sirloin with herb butter and sides.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 2,499</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Sirloin Steak" data-price="2499">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/grilled salmon (3).jpg" alt="Grilled Salmon" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Grilled Salmon</h5>
+                                    <p class="card-text text-muted">Salmon with lemon butter and asparagus.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 2,799</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Grilled Salmon" data-price="2799">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/Chicken Curry (1).jpg" alt="Chicken Curry" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Chicken Curry</h5>
+                                    <p class="card-text text-muted">Delicious spiced chicken curry.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 699</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Chicken Curry" data-price="699">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="drinks" role="tabpanel" aria-labelledby="tab-drinks">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/Fresh Lemonade (1).jpg" alt="Lemonade" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Fresh Lemonade</h5>
+                                    <p class="card-text text-muted">Lemon with mint and ice.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 299</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Fresh Lemonade" data-price="299">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/Iced Coffee (2).jpg" alt="Iced Coffee" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Iced Coffee</h5>
+                                    <p class="card-text text-muted">Cold brew with milk and ice.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 449</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Iced Coffee" data-price="449">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/Berry Smoothie (1).jpg" alt="Berry Smoothie" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Strawberry Smoothie</h5>
+                                    <p class="card-text text-muted">Fresh strawberries with milk and honey.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 499</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Strawberry Smoothie" data-price="499">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="desserts" role="tabpanel" aria-labelledby="tab-desserts">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/Chocolate Cake (3).jpg" alt="Chocolate Cake" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Chocolate Cake</h5>
+                                    <p class="card-text text-muted">Rich and moist slice.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 499</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Chocolate Cake" data-price="499">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/Tiramisu (3).jpg" alt="Tiramisu" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Tiramisu</h5>
+                                    <p class="card-text text-muted">Coffee-soaked layers, mascarpone.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 749</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Tiramisu" data-price="749">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-4" data-reveal>
+                            <div class="card menu-card h-100 shadow-sm menu-hover animate__animated animate__fadeInUp">
+                                <img class="card-img-top" src="img/Ice Cream Sundae (1).jpg" alt="Ice Cream Sundae" />
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Ice Cream Sundae</h5>
+                                    <p class="card-text text-muted">Vanilla, chocolate sauce, nuts.</p>
+                                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                                        <span class="price">Rs. 549</span>
+                                        <button class="btn btn-primary add-to-cart" data-item="Ice Cream Sundae" data-price="549">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Offers Carousel -->
+<section id="offers" class="py-5 bg-light" data-reveal>
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">Special Offers</h2>
+      <p class="text-muted">Grab these deals before they're gone</p>
+    </div>
+
+    <div id="offersCarousel" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner text-center">
+
+        <!-- Offer 1 -->
+        <div class="carousel-item active">
+          <div class="card shadow-sm mx-auto" style="max-width: 700px;">
+            <img src="img/Classic Burger (1).jpg"
+                 class="mx-auto d-block mt-3 rounded"
+                 alt="Burger Combo"
+                 style="width:70%; height:300px; object-fit:cover;">
+            <div class="card-body">
+              <h5 class="card-title">Burger Combo</h5>
+              <p class="card-text text-muted">Buy 1 Get 1 Free every Friday</p>
+              <a href="#menu" class="btn btn-success">Order Deal</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Offer 2 -->
+        <div class="carousel-item">
+          <div class="card shadow-sm mx-auto" style="max-width: 700px;">
+            <img src="img/large pizza (2).jpg"
+                 class="mx-auto d-block mt-3 rounded"
+                 alt="Pizza Party"
+                 style="width:70%; height:300px; object-fit:cover;">
+            <div class="card-body">
+              <h5 class="card-title">Pizza Party</h5>
+              <p class="card-text text-muted">20% off on 2 large pizzas</p>
+              <a href="#menu" class="btn btn-success">Grab Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Offer 3 -->
+        <div class="carousel-item">
+          <div class="card shadow-sm mx-auto" style="max-width: 700px;">
+            <img src="img/Chocolate Cake (3).jpg"
+                 class="mx-auto d-block mt-3 rounded"
+                 alt="Dessert Delight"
+                 style="width:70%; height:300px; object-fit:cover;">
+            <div class="card-body">
+              <h5 class="card-title">Dessert Delight</h5>
+              <p class="card-text text-muted">Free dessert with every meal above Rs. 999</p>
+              <a href="#menu" class="btn btn-success">Apply Offer</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Black Arrows -->
+      <a class="carousel-control-prev" href="#offersCarousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"
+              style="filter: invert(1);"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#offersCarousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"
+              style="filter: invert(1);"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+    <!-- Testimonials -->
+    <section id="gallery" class="py-5" data-reveal>
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Gallery</h2>
+                <p class="text-muted">Food and our cozy interiors</p>
+            </div>
+            <div class="row">
+                <div class="col-6 col-md-4 mb-4" data-reveal>
+                    <a href="#" class="gallery-item d-block zoom-hover" data-img="img/Caesar Salad (2).jpg">
+                        <img class="img-fluid rounded shadow-sm" src="img/Caesar Salad (2).jpg" alt="Salad" />
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 mb-4" data-reveal>
+                    <a href="#" class="gallery-item d-block zoom-hover" data-img="img/Margherita Pizza (1).jpg">
+                        <img class="img-fluid rounded shadow-sm" src="img/Margherita Pizza (1).jpg" alt="Pizza" />
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 mb-4" data-reveal>
+                    <a href="#" class="gallery-item d-block zoom-hover" data-img="img/Classic Burger (2).jpg">
+                        <img class="img-fluid rounded shadow-sm" src="img/Classic Burger (2).jpg" alt="Burger" />
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 mb-4" data-reveal>
+                    <a href="#" class="gallery-item d-block zoom-hover" data-img="img/Ingredients (1).jpg">
+                        <img class="img-fluid rounded shadow-sm" src="img/Ingredients (1).jpg" alt="Ingredients" />
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 mb-4" data-reveal>
+                    <a href="#" class="gallery-item d-block zoom-hover" data-img="img/Cheese Omelette (4).jpg">
+                        <img class="img-fluid rounded shadow-sm" src="img/Cheese Omelette (4).jpg" alt="Breakfast" />
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 mb-4" data-reveal>
+                    <a href="#" class="gallery-item d-block zoom-hover" data-img="img/Ice Cream Sundae (3).jpg">
+                        <img class="img-fluid rounded shadow-sm" src="img/Ice Cream Sundae (3).jpg" alt="Dessert" />
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 mb-4" data-reveal>
+                    <a href="#" class="gallery-item d-block zoom-hover" data-img="img/Pasta Alfredo (3).jpg">
+                        <img class="img-fluid rounded shadow-sm" src="img/Pasta Alfredo (3).jpg" alt="Pasta" />
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 mb-4" data-reveal>
+                    <a href="#" class="gallery-item d-block zoom-hover" data-img="img/Iced Coffee (1).jpg">
+                        <img class="img-fluid rounded shadow-sm" src="img/Iced Coffee (1).jpg" alt="Coffee" />
+                    </a>
+                </div>
+                <div class="col-6 col-md-4 mb-4" data-reveal>
+                    <a href="#" class="gallery-item d-block zoom-hover" data-img="img/Restaurant Interior (3).jpg">
+                        <img class="img-fluid rounded shadow-sm" src="img/Restaurant Interior (3).jpg" alt="Restaurant Interior" />
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox Modal -->
+    <div class="modal fade" id="lightboxModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content bg-transparent border-0">
+                <button type="button" class="close text-white ml-auto mr-2 mt-2" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <img id="lightboxImg" src="" alt="Preview" class="img-fluid rounded shadow" />
+            </div>
+        </div>
+    </div>
+
+    <section id="testimonials" class="py-5" data-reveal>
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">What Our Customers Say</h2>
+                <p class="text-muted">Real reviews from satisfied foodies</p>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="testimonial card h-100 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <img class="rounded-circle mr-3" src="img/Women (1).jpg" width="48" height="48" alt="User" />
+                                <div>
+                                    <h6 class="mb-0">Ayesha K.</h6>
+                                    <div class="stars" aria-label="5 star rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mb-0">Super fast delivery and the burger was absolutely delicious. Highly recommend!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="testimonial card h-100 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <img class="rounded-circle mr-3" src="img/men (1).jpg" width="48" height="48" alt="User" />
+                                <div>
+                                    <h6 class="mb-0">Rahul S.</h6>
+                                    <div class="stars" aria-label="4 star rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mb-0">Great pizza and amazing offers. The app is easy to use as well.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="testimonial card h-100 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <img class="rounded-circle mr-3" src="img/Women (3).jpg" width="48" height="48" alt="User" />
+                                <div>
+                                    <h6 class="mb-0">Sara T.</h6>
+                                    <div class="stars" aria-label="5 star rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="mb-0">Loved the sushi platter. Fresh and flavorful. Will order again!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reservation -->
+    <section id="reservation" class="py-5 bg-light" data-reveal>
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Book a Table</h2>
+                <p class="text-muted">Reserve your spot in just a few clicks</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <form id="reservationForm" novalidate>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" id="name" placeholder="Your Name" required />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" placeholder="you@example.com" required />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="phone">Phone</label>
+                                <input type="tel" class="form-control" id="phone" placeholder="0300-1234567" required />
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="date">Date</label>
+                                <input type="date" class="form-control" id="date" required />
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="time">Time</label>
+                                <input type="time" class="form-control" id="time" required />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label for="guests">Guests</label>
+                                <select id="guests" class="form-control" required>
+                                    <option value="">Choose...</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6+</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-9">
+                                <label for="message">Message (optional)</label>
+                                <input type="text" class="form-control" id="message" placeholder="Any special request?" />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-lg">Reserve Now</button>
+                        <small id="reserveMsg" class="form-text mt-2 text-success d-none">Thanks! Your reservation request has been received.</small>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="py-5" data-reveal>
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Contact & Location</h2>
+                <p class="text-muted">We’d love to hear from you</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="embed-responsive embed-responsive-16by9 rounded shadow-sm overflow-hidden">
+                        <iframe class="embed-responsive-item" src="https://www.google.com/maps/d/embed?mid=1GpE_VDNX0qCEqdh0VyLLDgVdNg9LG30&ehbc=2E312F" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h5>Get in touch</h5>
+                    <p class="mb-1"><i class="fas fa-phone mr-2 text-muted"></i> +92 332 3230869</p>
+                    <p class="mb-1"><i class="fas fa-envelope mr-2 text-muted"></i> info@foodiehub.com</p>
+                    <p class="mb-4"><i class="fas fa-map-marker-alt mr-2 text-muted"></i> Station Road, Larkana</p>
+
+                    <h6 class="mb-2">Opening Hours</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li>Mon - Thu: 10:00 AM - 12:00 AM</li>
+                        <li>Fri: 10:00 AM - 10:30 PM</li>
+                        <li>Sat - Sun: 9:00 AM - 11:30 PM</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light pt-5 pb-4" data-reveal>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="img/Restaurant-logo.png" width="36" height="36" class="mr-2" alt="FoodieHub" />
+                        <h5 class="mb-0"  style="font-family: 'Merriweather';">FoodieHub</h5>
+                    </div>
+                    <p class="text-muted mb-3">Delicious food delivered fast. Fresh ingredients, top-rated chefs, and great deals every day.</p>
+                    <div>
+                        <a href="#" class="text-light mr-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-light mr-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-light mr-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-youtube fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h6 class="text-uppercase">Quick Links</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a class="text-light" href="#menu">Menu</a></li>
+                        <li class="mb-2"><a class="text-light" href="#offers">Offers</a></li>
+                        <li class="mb-2"><a class="text-light" href="#reservation">Book a Table</a></li>
+                        <li class="mb-2"><a class="text-light" href="#contact">Contact</a></li>
+                        <li class="mb-2"><a class="text-light" href="#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h6 class="text-uppercase">Contact</h6>
+                    <ul class="list-unstyled small mb-0">
+                        <li class="mb-2"><i class="fas fa-phone mr-2 text-muted"></i> +92 332 3230869</li>
+                        <li class="mb-2"><i class="fas fa-envelope mr-2 text-muted"></i> info@foodiehub.com</li>
+                        <li><i class="fas fa-map-marker-alt mr-2 text-muted"></i> Station Road, Larkana</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small">
+                <div class="mb-2 mb-md-0">&#169; <span id="year"></span> FoodieHub. All rights reserved.</div>
+                <div>
+                    <a href="#" class="text-light mr-3">Privacy</a>
+                    <a href="#" class="text-light">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Panel -->
+    <div id="cartPanel" class="cart-panel">
+        <div class="cart-header">
+            <h4 class="mb-0">Shopping Cart</h4>
+            <button id="closeCart" class="btn btn-link text-dark p-0">
+                <i class="fas fa-times fa-lg"></i>
+            </button>
+        </div>
+        <div class="cart-body">
+            <div id="cartItems" class="cart-items">
+                <!-- Cart items will be dynamically added here -->
+            </div>
+            <div id="emptyCart" class="text-center text-muted py-5">
+                <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+                <p>Your cart is empty</p>
+                <p class="small">Add some delicious items to get started!</p>
+                <a href="#menu" class="btn btn-primary">Browse Menu</a>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total d-flex justify-content-between align-items-center mb-3">
+                <span class="font-weight-bold">Total:</span>
+                <span id="cartTotal" class="font-weight-bold text-primary">Rs. 0.00</span>
+            </div>
+            <button id="checkoutBtn" class="btn btn-primary btn-block" disabled>
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+    
+    <!-- Cart Overlay -->
+    <div id="cartOverlay" class="cart-overlay"></div>
+
+    <!-- Checkout Panel -->
+    <div id="checkoutPanel" class="cart-panel">
+        <div class="cart-header">
+            <h4 class="mb-0">Checkout</h4>
+            <div>
+                <button id="backToCart" class="btn btn-link text-dark p-0 mr-3" title="Back to cart">
+                    <i class="fas fa-arrow-left fa-lg"></i>
+                </button>
+                <button id="closeCheckout" class="btn btn-link text-dark p-0" title="Close">
+                    <i class="fas fa-times fa-lg"></i>
+                </button>
+            </div>
+        </div>
+        <div class="cart-body">
+            <form id="checkoutForm" novalidate>
+                <h6 class="text-muted mb-2">Contact</h6>
+                <div class="form-group">
+                    <label for="coName">Full Name</label>
+                    <input type="text" class="form-control" id="coName" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="coPhone">Phone</label>
+                    <input type="tel" class="form-control" id="coPhone" placeholder="0300-1234567" required>
+                </div>
+
+                <h6 class="text-muted mt-3 mb-2">Delivery Address</h6>
+                <div class="form-group">
+                    <label for="coAddress">Address</label>
+                    <input type="text" class="form-control" id="coAddress" placeholder="House #, Street, Area" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        <label for="coCity">City</label>
+                        <select id="coCity" class="form-control" required>
+                                    <option value="">Select City</option>
+                                    <option>Hyderabad</option>
+                                    <option>Islamabad</option>
+                                    <option>Larkana</option>
+                                    <option>Lahore</option>
+                                    <option>Multan</option>
+                                    <option>Karachi</option>
+                                </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="coZip">ZIP (Optional)</label>
+                        <input type="text" class="form-control" id="coZip" placeholder="00000">
+                    </div>
+                </div>
+
+                <h6 class="text-muted mt-3 mb-2">Payment</h6>
+                <div class="form-group">
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="payCOD" name="paymentMethod" class="custom-control-input" value="cod" checked>
+                        <label class="custom-control-label" for="payCOD">Cash on Delivery</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="payCard" name="paymentMethod" class="custom-control-input" value="card">
+                        <label class="custom-control-label" for="payCard">Credit/Debit Card</label>
+                    </div>
+                </div>
+
+                <div id="cardDetails" class="border rounded p-3 mb-3 d-none">
+                    <div class="form-group mb-2">
+                        <label for="coCardNumber">Card Number</label>
+                        <input type="text" class="form-control" id="coCardNumber" placeholder="4111 1111 1111 1111">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-6 mb-0">
+                            <label for="coCardExpiry">Expiry</label>
+                            <input type="text" class="form-control" id="coCardExpiry" placeholder="MM/YY">
+                        </div>
+                        <div class="form-group col-6 mb-0">
+                            <label for="coCardCvv">CVV</label>
+                            <input type="text" class="form-control" id="coCardCvv" placeholder="123">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="font-weight-bold">Total</div>
+                    <div id="checkoutTotal" class="font-weight-bold text-primary">Rs. 0.00</div>
+                </div>
+            </form>
+        </div>
+        <div class="cart-footer">
+            <button class="btn btn-success btn-block" id="placeOrderBtn">Place Order</button>
+
+  <div id="confirmMsg">
+    <h2>🎉 Order Confirmed!</h2>
+    <div class="progress-container">
+      <div class="progress" id="progress"></div>
+      <div class="step active">1</div>
+      <div class="step">2</div>
+      <div class="step">3</div>
+      <div class="step">4</div>
+    </div>
+    <div class="labels">
+      <span>Received</span>
+      <span>Cooking</span>
+      <span>Delivery</span>
+      <span>Delivered</span>
+    </div>
+    <div id="status">✅ Order Received</div>
+    <div id="timer">Waiting... 10s</div>
+    <div class="emoji" id="emoji"><i class="fa fa-envelope"></i></div>
+  </div>
+            <small id="checkoutMsg" class="form-text mt-2 text-success d-none">Order placed! Thank you.</small>
+        </div>
+    </div>
+
+    <!-- Add Login/Register Modal at the end of body, before </body> -->
+<div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="authModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="authModalLabel">Login or Register</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs mb-3" id="authTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="login-tab" data-toggle="tab" href="#login" role="tab" aria-controls="login" aria-selected="true">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab" aria-controls="register" aria-selected="false">Register</a>
+          </li>
+        </ul>
+        <div class="tab-content" id="authTabContent">
+          <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+            <form id="loginForm" autocomplete="off">
+              <div class="form-group">
+                <label for="loginEmail">Email address</label>
+                <input type="email" class="form-control" id="loginEmail" required>
+              </div>
+              <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" class="form-control" id="loginPassword" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Login</button>
+              <small id="loginMsg" class="form-text mt-2 text-danger d-none"></small>
+            </form>
+          </div>
+          <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+            <form id="registerForm" autocomplete="off">
+              <div class="form-group">
+                <label for="registerName">Name</label>
+                <input type="text" class="form-control" id="registerName" required>
+              </div>
+              <div class="form-group">
+                <label for="registerEmail">Email address</label>
+                <input type="email" class="form-control" id="registerEmail" required>
+              </div>
+              <div class="form-group">
+                <label for="registerPassword">Password</label>
+                <input type="password" class="form-control" id="registerPassword" required>
+              </div>
+              <button type="submit" class="btn btn-success btn-block">Register</button>
+              <small id="registerMsg" class="form-text mt-2 text-danger d-none"></small>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- jQuery, Popper.js, Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B0UglyR+LyP8+2Dt1I4eQnFQ2qnfH5K9vGQnEw5y5nI2eG5nq6tZTtZ0e2QvZ6jI" crossorigin="anonymous"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
