@@ -1,0 +1,525 @@
+/* Base */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    color: #333;
+}
+
+.section-title {
+    font-weight: 700;
+}
+
+/* Hero */
+.hero-section {
+    position: relative;
+}
+
+.hero-section .carousel,
+.hero-section .carousel-item {
+    height: 85vh;
+}
+
+.hero-img {
+    object-fit: cover;
+    height: 85vh;
+}
+
+.video-bg-wrapper {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    overflow: hidden;
+}
+
+.video-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    filter: brightness(0.7);
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.carousel-caption {
+    bottom: 0;
+    top: 0;
+}
+
+/* Cards */
+.menu-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+    will-change: transform;
+    position: relative;
+}
+
+.menu-card {
+    overflow: hidden;
+}
+.menu-card .card-body {
+    overflow: hidden;
+}
+.menu-card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+}
+
+.menu-card .card-title,
+.menu-card .card-text {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.menu-card .btn {
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+
+.menu-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,0.15) !important;
+}
+.menu-card::before {
+    content: "";
+    position: absolute;
+    top: -20%;
+    left: -20%;
+    width: 140%;
+    height: 140%;
+    background: linear-gradient(120deg, rgba(255,255,255,0.0) 30%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.0) 70%);
+    transform: translateX(-120%) rotate(10deg);
+    transition: transform 0.6s ease;
+    pointer-events: none;
+}
+.menu-card:hover::before { transform: translateX(20%) rotate(10deg); }
+
+/* Buttons inside cards lift on hover */
+.menu-card .btn { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.menu-card .btn:hover { transform: translateY(-2px); box-shadow: 0 .5rem 1rem rgba(0,0,0,0.15); }
+
+/* Menu images zoom-on-hover (same as gallery) */
+.menu-card .card-img-top { transition: transform 0.35s ease, box-shadow 0.35s ease; }
+.menu-card:hover .card-img-top { transform: scale(1.05); box-shadow: 0 1.25rem 2.5rem rgba(0,0,0,0.2); }
+
+/* Menu hover popup */
+.menu-hover {
+    position: relative;
+}
+.menu-hover::after {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: all 0.25s ease;
+}
+.menu-hover:hover::after { opacity: 1; transform: translateY(0); }
+
+.price {
+    font-weight: 700;
+    color: #28a745;
+}
+
+/* Offers */
+.offer-card {
+    border-left: 4px solid #28a745;
+}
+
+/* Testimonials */
+.testimonial .stars i {
+    color: #f5c518;
+}
+
+/* Navbar link smooth hover */
+.navbar .nav-link {
+    transition: color 0.2s ease;
+}
+
+.navbar .nav-link:hover {
+    color: #ffc107 !important;
+}
+
+/* Subtle reveal animation */
+[data-reveal] {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-reveal].revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Utilities */
+.shadow-sm {
+    transition: box-shadow 0.25s ease;
+}
+
+/* Footer */
+footer a:hover { text-decoration: underline; }
+
+/* About info box */
+.about-info-box ul { list-style: disc; }
+
+/* Gallery animations */
+.zoom-hover img {
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.zoom-hover:hover img {
+    transform: scale(1.05);
+    box-shadow: 0 1.25rem 2.5rem rgba(0,0,0,0.2);
+}
+
+/* Ensure object-cover helper */
+.object-cover { object-fit: cover; }
+
+/* Cart Panel Styles */
+.cart-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: white;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+    z-index: 1050;
+    transition: right 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-panel.open {
+    right: 0;
+}
+
+.cart-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+}
+
+.cart-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.cart-footer {
+    padding: 1.5rem;
+    border-top: 1px solid #e9ecef;
+    background: #f8f9fa;
+}
+
+.cart-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1040;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.cart-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Checkout specific tweaks */
+#checkoutPanel .cart-header { background: #f8f9fa; }
+#checkoutPanel .cart-body { padding-bottom: 0; }
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.cart-item-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 1rem;
+}
+
+.cart-item-details {
+    flex: 1;
+}
+
+.cart-item-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.cart-item-price {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.cart-item-quantity {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quantity-btn {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #dee2e6;
+    background: white;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quantity-btn:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.quantity-btn:active {
+    transform: scale(0.95);
+}
+
+.quantity-display {
+    min-width: 40px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.remove-item {
+    color: #dc3545;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    margin-left: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.remove-item:hover {
+    color: #c82333;
+}
+
+/* Responsive cart panel */
+@media (max-width: 576px) {
+    .cart-panel {
+        width: 100%;
+        right: -100%;
+    }
+}
+
+/* Cart icon clickable */
+.navbar .nav-link[href="#cart"] {
+    cursor: pointer;
+}
+
+/* Prevent body scroll when cart is open */
+body.cart-open {
+    overflow: hidden;
+}
+
+/* Reservation (Book a Table) form styling */
+#reservation {
+    background-image: linear-gradient(180deg, rgba(0,0,0,0.015), rgba(0,0,0,0));
+}
+
+#reservation #reservationForm {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: .75rem;
+    padding: 1.25rem;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,0.05);
+    position: relative;
+}
+
+@media (min-width: 768px) {
+    #reservation #reservationForm { padding: 2rem; }
+}
+
+#reservation #reservationForm label {
+    font-weight: 600;
+}
+
+#reservation #reservationForm::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-top-left-radius: .75rem;
+    border-top-right-radius: .75rem;
+    background: linear-gradient(90deg, #28a745, #17a2b8, #007bff);
+}
+
+#reservation #reservationForm .form-control,
+#reservation #reservationForm select.form-control {
+    border-radius: .5rem;
+    border-color: #dee2e6;
+    transition: box-shadow .2s ease, border-color .2s ease;
+}
+
+#reservation #reservationForm .form-control:focus,
+#reservation #reservationForm select.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 .2rem rgba(0,123,255,.15);
+}
+
+#reservation #reservationForm .form-group { margin-bottom: 1.1rem; }
+
+#reservation #reservationForm ::placeholder { color: #adb5bd; }
+
+#reservation #reservationForm .btn-success {
+    border-radius: .5rem;
+    padding: .6rem 1rem;
+    box-shadow: 0 .25rem .5rem rgba(40,167,69,.15);
+    transition: transform .08s ease, box-shadow .2s ease;
+}
+
+#reservation #reservationForm .btn-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 .5rem 1rem rgba(40,167,69,.2);
+}
+
+#reservation #reserveMsg { font-weight: 600; }
+
+/* Elevate form when any field is focused */
+#reservation #reservationForm:focus-within {
+    box-shadow: 0 .75rem 2rem rgba(0,0,0,.08);
+    transform: translateY(-1px);
+}
+
+/* Nicer invalid state */
+#reservation #reservationForm .form-control.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 .2rem rgba(220,53,69,.1);
+}
+
+/* Smooth message appearance */
+#reservation #reserveMsg {
+    animation: reserveMsgFade .35s ease;
+}
+
+@keyframes reserveMsgFade {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Auth Modal Styling */
+#authModal .modal-content {
+    border-radius: 1rem;
+    box-shadow: 0 1.5rem 3rem rgba(0,0,0,0.12);
+    border: none;
+}
+#authModal .modal-header {
+    border-bottom: none;
+    background: linear-gradient(90deg, #28a745, #17a2b8, #007bff);
+    color: #fff;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+}
+#authModal .modal-title {
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+#authModal .nav-tabs {
+    border-bottom: 1px solid #e9ecef;
+    justify-content: center;
+}
+#authModal .nav-tabs .nav-link {
+    border: none;
+    border-radius: .5rem .5rem 0 0;
+    color: #007bff;
+    font-weight: 600;
+    background: #f8f9fa;
+    margin: 0 2px;
+    transition: background 0.2s, color 0.2s;
+}
+#authModal .nav-tabs .nav-link.active {
+    background: #fff;
+    color: #28a745;
+    border-bottom: 2px solid #28a745;
+}
+#authModal .tab-content {
+    padding: 1.5rem 0 0 0;
+}
+#authModal form {
+    background: #fff;
+    border-radius: .75rem;
+    padding: 1.25rem 1rem 1rem 1rem;
+    box-shadow: 0 .25rem .5rem rgba(0,0,0,0.04);
+}
+#authModal .form-group label {
+    font-weight: 600;
+}
+#authModal .form-control {
+    border-radius: .5rem;
+    border-color: #dee2e6;
+    transition: box-shadow .2s, border-color .2s;
+}
+#authModal .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 .2rem rgba(40,167,69,.08);
+}
+#authModal .btn {
+    border-radius: .5rem;
+    font-weight: 600;
+    box-shadow: 0 .25rem .5rem rgba(40,167,69,.08);
+    transition: transform .08s, box-shadow .2s;
+}
+#authModal .btn-primary {
+    background: linear-gradient(90deg, #28a745, #17a2b8, #007bff);
+    border: none;
+}
+#authModal .btn-success {
+    background: linear-gradient(90deg, #28a745, #17a2b8);
+    border: none;
+}
+#authModal .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 .5rem 1rem rgba(40,167,69,.12);
+}
+#authModal small.form-text {
+    font-weight: 600;
+    min-height: 1.5em;
+    transition: color 0.2s;
+}
+#authModal .form-control.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 .2rem rgba(220,53,69,.08);
+}
+
